@@ -59,7 +59,7 @@ public class Main {
         do {
             System.out.println(STEP_SEPARATOR);
             System.out.println("Player, it's your turn");
-            System.out.println("Enter coordinates (i.e. A3) for your shot or S for show sunk or L left over ships:");
+            System.out.println("Enter coordinates (i.e. A3) for your shot or S for show sunk or L for show left over ships:");
             String input = scanner.next();
             if (input.equals("S")) {
                 showSunkShips(enemyFleet);
