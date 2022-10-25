@@ -59,7 +59,7 @@ public class Main {
         do {
             System.out.println(STEP_SEPARATOR);
             System.out.println("Player, it's your turn");
-            System.out.println("Enter coordinates (i.e. A3) for your shot or S for show sunk or left over ships:");
+            System.out.println("Enter coordinates (i.e. A3) for your shot or S for show sunk or L left over ships:");
             String input = scanner.next();
             if (input.equals("S")) {
                 showSunkShips(enemyFleet);
@@ -158,7 +158,7 @@ public class Main {
         System.out.println("Please position your fleet (Game board has size from A to H and 1 to 8) :");
 
         for (Ship ship : myFleet) {
-            System.out.println("");
+            System.out.println(STEP_SEPARATOR);
             System.out.println(String.format("Please enter the positions for the %s (size: %s)", ship.getName(), ship.getSize()));
             for (int i = 1; i <= ship.getSize(); i++) {
                 System.out.println(String.format("Enter position %s of %s (i.e A3):", i, ship.getSize()));
