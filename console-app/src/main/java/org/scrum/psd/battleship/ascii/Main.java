@@ -197,27 +197,55 @@ public class Main {
 
     protected static void InitializeEnemyFleet() {
         enemyFleet = GameController.initializeShips();
+        List<Letter> rows = Arrays.asList(Letter.A, Letter.B, Letter.C, Letter.D, Letter.E, Letter.F, Letter.G, Letter.H);
+        List<Integer> usedIndexRows = new ArrayList<>();
 
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 4));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 5));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 6));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 7));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 8));
+        for (Ship s : enemyFleet) {
+            Letter row = getRandomRow(rows, usedIndexRows);
+            Integer startPosition = getRandomColumn(8 - s.getSize());
+            for (int i = 0; i < s.getSize(); i++) {
+                s.getPositions().add(new Position(row, startPosition + i));
+            }
+        }
 
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 6));
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 7));
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 8));
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 9));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 4));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 5));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 6));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 7));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 8));
+//
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 6));
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 7));
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 8));
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 9));
+//
+//        enemyFleet.get(2).getPositions().add(new Position(Letter.A, 3));
+//        enemyFleet.get(2).getPositions().add(new Position(Letter.B, 3));
+//        enemyFleet.get(2).getPositions().add(new Position(Letter.C, 3));
+//
+//        enemyFleet.get(3).getPositions().add(new Position(Letter.F, 8));
+//        enemyFleet.get(3).getPositions().add(new Position(Letter.G, 8));
+//        enemyFleet.get(3).getPositions().add(new Position(Letter.H, 8));
+//
+//        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 5));
+//        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 6));
+    }
 
-        enemyFleet.get(2).getPositions().add(new Position(Letter.A, 3));
-        enemyFleet.get(2).getPositions().add(new Position(Letter.B, 3));
-        enemyFleet.get(2).getPositions().add(new Position(Letter.C, 3));
+    private static Letter getRandomRow(List<Letter> array, List<Integer> usedIndex) {
+        int rnd = -1;
+        do {
+            rnd = new Random().nextInt(array.size());
+        } while (usedIndex.contains(rnd));
+        usedIndex.add(rnd);
+        return array.get(rnd);
+    }
 
-        enemyFleet.get(3).getPositions().add(new Position(Letter.F, 8));
-        enemyFleet.get(3).getPositions().add(new Position(Letter.G, 8));
-        enemyFleet.get(3).getPositions().add(new Position(Letter.H, 8));
-
-        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 5));
-        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 6));
+    private static Integer getRandomColumn(Integer maxColumnIndex) {
+        List<Integer> columnIndex = new ArrayList<>();
+        for (int i = 0; i < maxColumnIndex; i++) {
+            columnIndex.add(i);
+        }
+        int rnd = new Random().nextInt(columnIndex.size());
+        return columnIndex.get(rnd);
     }
 }
