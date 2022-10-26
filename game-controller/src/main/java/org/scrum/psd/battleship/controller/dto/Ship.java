@@ -11,12 +11,13 @@ public class Ship {
     private String name;
     private int size;
     private List<Position> positions;
-    private Color color;
 
-    private int hitCount;
+    private List<Position> hitPositions;
+    private Color color;
 
     public Ship() {
         this.positions = new ArrayList<>();
+        this.hitPositions = new ArrayList<>();
     }
 
     public Ship(String name, int size) {
@@ -91,18 +92,18 @@ public class Ship {
         this.size = size;
     }
 
-    public int getHitCount() {
-        return hitCount;
+    public List<Position> getHitPositions() {
+        return hitPositions;
     }
 
-    public void setHitCount() {
-        this.hitCount++;
+    public void setHitPosition(Position hitPosition) {
+        hitPositions.add(hitPosition);
         if (isSunk()) {
             System.out.println(colorize("WOOOOOW!!!! Sunk ship: " + this.getName(), YELLOW_TEXT()));
         }
     }
 
     public boolean isSunk() {
-        return hitCount >= size;
+        return hitPositions.size() >= size;
     }
 }

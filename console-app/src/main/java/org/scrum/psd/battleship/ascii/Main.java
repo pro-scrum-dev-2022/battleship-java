@@ -118,6 +118,7 @@ public class Main {
                     System.out.println(colorize("                   \\  \\   /  /", RED_TEXT()));
 
                 }
+                showBattleField(false, false);
             }
         } while (true);
     }
@@ -247,5 +248,58 @@ public class Main {
         }
         int rnd = new Random().nextInt(columnIndex.size());
         return columnIndex.get(rnd);
+    }
+
+    private static void showBattleField(boolean my, boolean showShips) {
+        List<Letter> columns = Arrays.asList(Letter.A, Letter.B, Letter.C, Letter.D, Letter.E, Letter.F, Letter.G, Letter.H);
+        if (my) {
+            showBattleField(columns, myFleet, showShips);
+        } else {
+            showBattleField(columns, enemyFleet, showShips);
+        }
+    }
+
+    private static void showBattleField(List<Letter> columns, List<Ship> fleet, boolean showShips) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                boolean isShipFragment = checkField(columns, i, j, fleet, false);
+                boolean isHittedShipFragment = checkField(columns, i, j, fleet, true);
+                if (isShipFragment) {
+                    if (isHittedShipFragment) {
+                        System.out.print(colorize(" X ", RED_TEXT()));
+                    } else {
+                        if (showShips) {
+                            System.out.print(colorize(" H ", YELLOW_TEXT()));
+                        } else {
+                            System.out.print(colorize(" ~ ", BLUE_TEXT()));
+                        }
+                    }
+                } else {
+                    System.out.print(colorize(" ~ ", BLUE_TEXT()));
+                }
+                if (i == 7) {
+                    System.out.println();
+                }
+            }
+        }
+    }
+
+    private static boolean checkField(List<Letter> columns, int i, int j, List<Ship> fleet, boolean hittedFragment) {
+        for (Ship s : fleet) {
+            if (hittedFragment) {
+                for (Position p : s.getHitPositions()) {
+                    if (p.getRow() == i && columns.indexOf(p.getColumn()) == j) {
+                        return true;
+                    }
+                }
+            } else {
+                for (Position p : s.getPositions()) {
+                    if (p.getRow() == i && columns.indexOf(p.getColumn()) == j) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
