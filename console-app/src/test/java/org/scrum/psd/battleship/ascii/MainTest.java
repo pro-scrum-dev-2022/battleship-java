@@ -11,9 +11,8 @@ import org.scrum.psd.battleship.controller.dto.Ship;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.SAME_THREAD)
 public class MainTest {
 
     @Test
@@ -43,6 +42,8 @@ public class MainTest {
         ).collect(Collectors.toList());
 
         Set<String> stringPositions = positions.stream().map(Position::toString).collect(Collectors.toSet());
+        System.out.println(stringPositions);
+        System.out.println(positions);
         Assertions.assertEquals(stringPositions.size(), positions.size());
     }
 

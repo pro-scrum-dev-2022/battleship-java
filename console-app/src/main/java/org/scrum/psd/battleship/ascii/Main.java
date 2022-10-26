@@ -118,6 +118,7 @@ public class Main {
                     System.out.println(colorize("                   \\  \\   /  /", RED_TEXT()));
 
                 }
+                showBattleField(false, false);
             }
         } while (true);
     }
@@ -197,27 +198,108 @@ public class Main {
 
     protected static void InitializeEnemyFleet() {
         enemyFleet = GameController.initializeShips();
+        List<Letter> rows = Arrays.asList(Letter.A, Letter.B, Letter.C, Letter.D, Letter.E, Letter.F, Letter.G, Letter.H);
+        List<Integer> usedIndexRows = new ArrayList<>();
 
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 4));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 5));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 6));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 7));
-        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 8));
+        for (Ship s : enemyFleet) {
+            Letter row = getRandomRow(rows, usedIndexRows);
+            Integer startPosition = getRandomColumn(8 - s.getSize());
+            for (int i = 0; i < s.getSize(); i++) {
+                s.getPositions().add(new Position(row, startPosition + i));
+            }
+        }
 
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 6));
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 7));
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 8));
-        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 9));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 4));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 5));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 6));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 7));
+//        enemyFleet.get(0).getPositions().add(new Position(Letter.B, 8));
+//
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 6));
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 7));
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 8));
+//        enemyFleet.get(1).getPositions().add(new Position(Letter.E, 9));
+//
+//        enemyFleet.get(2).getPositions().add(new Position(Letter.A, 3));
+//        enemyFleet.get(2).getPositions().add(new Position(Letter.B, 3));
+//        enemyFleet.get(2).getPositions().add(new Position(Letter.C, 3));
+//
+//        enemyFleet.get(3).getPositions().add(new Position(Letter.F, 8));
+//        enemyFleet.get(3).getPositions().add(new Position(Letter.G, 8));
+//        enemyFleet.get(3).getPositions().add(new Position(Letter.H, 8));
+//
+//        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 5));
+//        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 6));
+    }
 
-        enemyFleet.get(2).getPositions().add(new Position(Letter.A, 3));
-        enemyFleet.get(2).getPositions().add(new Position(Letter.B, 3));
-        enemyFleet.get(2).getPositions().add(new Position(Letter.C, 3));
+    private static Letter getRandomRow(List<Letter> array, List<Integer> usedIndex) {
+        int rnd = -1;
+        do {
+            rnd = new Random().nextInt(array.size());
+        } while (usedIndex.contains(rnd));
+        usedIndex.add(rnd);
+        return array.get(rnd);
+    }
 
-        enemyFleet.get(3).getPositions().add(new Position(Letter.F, 8));
-        enemyFleet.get(3).getPositions().add(new Position(Letter.G, 8));
-        enemyFleet.get(3).getPositions().add(new Position(Letter.H, 8));
+    private static Integer getRandomColumn(Integer maxColumnIndex) {
+        List<Integer> columnIndex = new ArrayList<>();
+        for (int i = 0; i < maxColumnIndex; i++) {
+            columnIndex.add(i);
+        }
+        int rnd = new Random().nextInt(columnIndex.size());
+        return columnIndex.get(rnd);
+    }
 
-        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 5));
-        enemyFleet.get(4).getPositions().add(new Position(Letter.C, 6));
+    private static void showBattleField(boolean my, boolean showShips) {
+        List<Letter> columns = Arrays.asList(Letter.A, Letter.B, Letter.C, Letter.D, Letter.E, Letter.F, Letter.G, Letter.H);
+        if (my) {
+            showBattleField(columns, myFleet, showShips);
+        } else {
+            showBattleField(columns, enemyFleet, showShips);
+        }
+    }
+
+    private static void showBattleField(List<Letter> columns, List<Ship> fleet, boolean showShips) {
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                boolean isShipFragment = checkField(columns, i, j, fleet, false);
+                boolean isHittedShipFragment = checkField(columns, i, j, fleet, true);
+                if (isShipFragment) {
+                    if (isHittedShipFragment) {
+                        System.out.print(colorize(" X ", RED_TEXT()));
+                    } else {
+                        if (showShips) {
+                            System.out.print(colorize(" H ", YELLOW_TEXT()));
+                        } else {
+                            System.out.print(colorize(" ~ ", BLUE_TEXT()));
+                        }
+                    }
+                } else {
+                    System.out.print(colorize(" ~ ", BLUE_TEXT()));
+                }
+                if (i == 7) {
+                    System.out.println();
+                }
+            }
+        }
+    }
+
+    private static boolean checkField(List<Letter> columns, int i, int j, List<Ship> fleet, boolean hittedFragment) {
+        for (Ship s : fleet) {
+            if (hittedFragment) {
+                for (Position p : s.getHitPositions()) {
+                    if (p.getRow() == i && columns.indexOf(p.getColumn()) == j) {
+                        return true;
+                    }
+                }
+            } else {
+                for (Position p : s.getPositions()) {
+                    if (p.getRow() == i && columns.indexOf(p.getColumn()) == j) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
